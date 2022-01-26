@@ -18,8 +18,21 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init({
     name: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
+    email: {
+      type:DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate:{
+        isEmail: true, 
+        notEmpty:{msg:'Email is required'},
+      }},
+    password: {
+      type:DataTypes.STRING,
+      allowNull: false,
+      validate:{
+        len: [5, 10],
+        notEmpty:{msg:'password is required'}
+      }},
     phoneNumber: DataTypes.STRING
   }, {
     sequelize,

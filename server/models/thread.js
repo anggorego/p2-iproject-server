@@ -16,8 +16,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Thread.init({
-    title: DataTypes.STRING,
-    description: DataTypes.STRING
+    title:{type:DataTypes.STRING,
+      allowNull: false,
+      validate:{
+        notEmpty:{msg:'title is required'}
+      }},
+    description: {type:DataTypes.STRING,
+      allowNull: false,
+      validate:{
+        notEmpty:{msg:'description is required'}
+      }},
   }, {
     sequelize,
     modelName: 'Thread',

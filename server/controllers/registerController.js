@@ -9,7 +9,7 @@ const postRegister = async(req,res,next)=>{
       throw {name:'registration failed'}
     }
   } catch(err){
-    console.log(err);
+   
     next(err)
   }
 }

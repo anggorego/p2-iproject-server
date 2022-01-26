@@ -1,9 +1,8 @@
-const {Thread} = require("../models")
+const {Thread,Comment,User} = require("../models")
 
 const getThreads = async(req,res,next)=>{
-
   try{
-    const threads = await Thread.findAll()
+    const threads = await Thread.findAll({include:[{model:User},{model:Comment}]})
     res.status(200).json(threads)
   }catch(err){
     next()
@@ -11,11 +10,12 @@ const getThreads = async(req,res,next)=>{
 }
 
 const getThreadById = async(req,res,next)=>{
-// console.log('jalan');
 const id = req.params.id
 try{
-  const thread = await Thread.findOne({where:{id:id}})
-  console.log(thread);
+  const thread = await Thread.findOne({
+    where:{id:id},
+    include:{model:Comment,include:{model:User}}
+  })
   if (thread){
     res.status(200).json(thread)
   }else{
@@ -29,14 +29,15 @@ try{
 
 const getThreadsByUser = async(req,res,next)=>{
   const userId = req.currentUser.id
+ 
   try{
     const threads = await Thread.findAll({
-      where:{userId:userId}
+      where:{userId:userId},
+      include:[{model:User},{model:Comment}]
     })
  
     res.status(200).json(threads)
   }catch(err){
-    
     next(err)
   }
 }
@@ -99,7 +100,7 @@ const updateThread = async(req,res,next)=>{
       next({name:'not found'})
     }
   }catch(err){
-    console.log(err);
+    
     next(err)
   }
 }
