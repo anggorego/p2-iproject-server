@@ -1,5 +1,5 @@
-const { Comment, Thread} = require("../models")
-
+const { Comment, Thread,User} = require("../models")
+const sendMail = require("../helpers/nodemailer")
 const getComments = async (req,res,next)=>{
   const threadId = req.params.threadid
   try{
@@ -20,15 +20,26 @@ const postComment = async (req,res,next)=>{
   const {description} = req.body
   try{
     const comment = await Comment.create({description,threadId,userId})
-
+    if(comment){
+      const thread = await Thread.findOne({
+        where:{id:threadId},
+        include:{
+          model:User
+        }
+      });
+      if(thread){
+        sendMail(thread.User.email,thread.title,comment.description)
+      }
+    }
     res.status(201).json(comment)
+    
   }catch(err){
     next(err)
   }
 }
 
 const deleteComment = async(req,res,next)=>{
-  // console.log(req.params);
+
   const threadId = req.params.threadid
   const id = req.params.id
   try{

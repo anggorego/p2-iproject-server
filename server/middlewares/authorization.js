@@ -1,6 +1,6 @@
 const { Thread } = require('../models/index')
 const authorization = async ( req,res,next)=>{
-  console.log(req.currentUser);
+ 
 let id = req.params.id
 let userId =  req.currentUser.id
 
